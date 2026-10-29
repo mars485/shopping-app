@@ -1,0 +1,29 @@
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: shopping
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+      POSTGRES_DB: shopping
+    volumes:
+      - shopping_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shopping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  api:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      APP_ENV: production
+      DATABASE_URL: postgresql+psycopg://shopping:${DB_PASSWORD}@db:5432/shopping
+      SECRET_KEY: ${SECRET_KEY:?Set SECRET_KEY in .env}
+    ports:
+      - "192.168.1.250:8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+volumes:
+  shopping_db:
