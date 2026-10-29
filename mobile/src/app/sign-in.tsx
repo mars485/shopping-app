@@ -55,22 +55,21 @@ export default function SignInScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: colors.bg }]}>
-      <LinearGradient
-        colors={gradient}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={[
-          styles.hero,
-          keyboardHeight > 0 && styles.heroCompact,
-          { paddingTop: insets.top + (keyboardHeight > 0 ? 12 : 36), borderBottomLeftRadius: radius.xl, borderBottomRightRadius: radius.xl },
-        ]}
-      >
-        <Brand size={keyboardHeight > 0 ? 40 : 60} tone="onPrimary" />
-        <Text style={[styles.heroTitle, keyboardHeight > 0 && styles.heroTitleCompact]}>Shopping</Text>
-        {keyboardHeight > 0 ? null : (
+      {keyboardHeight === 0 ? (
+        <LinearGradient
+          colors={gradient}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[
+            styles.hero,
+            { paddingTop: insets.top + 36, borderBottomLeftRadius: radius.xl, borderBottomRightRadius: radius.xl },
+          ]}
+        >
+          <Brand size={60} tone="onPrimary" />
+          <Text style={styles.heroTitle}>Shopping</Text>
           <Text style={styles.heroSubtitle}>Семейные списки покупок — всегда под рукой</Text>
-        )}
-      </LinearGradient>
+        </LinearGradient>
+      ) : null}
 
       <View style={styles.flex}>
         <ScrollView
@@ -161,9 +160,7 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   flex: { flex: 1 },
   hero: { paddingHorizontal: 24, paddingBottom: 44, gap: 10 },
-  heroCompact: { paddingBottom: 14, gap: 4 },
   heroTitle: { fontSize: 34, fontWeight: '800', color: '#FFFFFF', letterSpacing: -0.8, marginTop: 6 },
-  heroTitleCompact: { fontSize: 24, marginTop: 0 },
   heroSubtitle: { fontSize: 15, color: 'rgba(255,255,255,0.9)', lineHeight: 21, maxWidth: 300 },
   content: { paddingHorizontal: 20, paddingTop: 18, gap: 16 },
   card: { padding: 20, gap: 16, borderWidth: StyleSheet.hairlineWidth },

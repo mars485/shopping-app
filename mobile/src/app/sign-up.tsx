@@ -63,31 +63,30 @@ export default function SignUpScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: colors.bg }]}>
-      <LinearGradient
-        colors={gradient}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={[
-          styles.hero,
-          keyboardHeight > 0 && styles.heroCompact,
-          { paddingTop: insets.top + (keyboardHeight > 0 ? 10 : 20), borderBottomLeftRadius: radius.xl, borderBottomRightRadius: radius.xl },
-        ]}
-      >
-        <Pressable
-          onPress={() => router.back()}
-          accessibilityRole="button"
-          accessibilityLabel="Назад"
-          style={styles.back}
-          hitSlop={10}
+      {keyboardHeight === 0 ? (
+        <LinearGradient
+          colors={gradient}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[
+            styles.hero,
+            { paddingTop: insets.top + 20, borderBottomLeftRadius: radius.xl, borderBottomRightRadius: radius.xl },
+          ]}
         >
-          <Ionicons name="chevron-back" size={22} color="#FFFFFF" />
-        </Pressable>
-        <Brand size={keyboardHeight > 0 ? 36 : 52} tone="onPrimary" />
-        <Text style={[styles.heroTitle, keyboardHeight > 0 && styles.heroTitleCompact]}>Новый аккаунт</Text>
-        {keyboardHeight > 0 ? null : (
+          <Pressable
+            onPress={() => router.back()}
+            accessibilityRole="button"
+            accessibilityLabel="Назад"
+            style={styles.back}
+            hitSlop={10}
+          >
+            <Ionicons name="chevron-back" size={22} color="#FFFFFF" />
+          </Pressable>
+          <Brand size={52} tone="onPrimary" />
+          <Text style={styles.heroTitle}>Новый аккаунт</Text>
           <Text style={styles.heroSubtitle}>Один аккаунт — все семейные списки на всех устройствах</Text>
-        )}
-      </LinearGradient>
+        </LinearGradient>
+      ) : null}
 
       <View style={styles.flex}>
         <ScrollView
@@ -191,7 +190,6 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   flex: { flex: 1 },
   hero: { paddingHorizontal: 24, paddingBottom: 36, gap: 10 },
-  heroCompact: { paddingBottom: 12, gap: 4 },
   back: {
     width: 38,
     height: 38,
@@ -202,7 +200,6 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   heroTitle: { fontSize: 28, fontWeight: '800', color: '#FFFFFF', letterSpacing: -0.6, marginTop: 4 },
-  heroTitleCompact: { fontSize: 22, marginTop: 0 },
   heroSubtitle: { fontSize: 14, color: 'rgba(255,255,255,0.9)', lineHeight: 20, maxWidth: 320 },
   content: { paddingHorizontal: 20, paddingTop: 18, gap: 14 },
   card: { padding: 20, gap: 16, borderWidth: StyleSheet.hairlineWidth },
