@@ -2,15 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Brand } from '../components/Brand';
@@ -19,6 +11,7 @@ import { Button } from '../components/ui/Button';
 import { TextField, type TextFieldRef } from '../components/ui/TextField';
 import { errorMessage } from '../lib/errors';
 import { useRedirectIfSignedIn } from '../lib/hooks';
+import { useKeyboardHeight } from '../lib/useKeyboardHeight';
 import { validateEmail, validatePassword, validatePasswordConfirm } from '../lib/validate';
 import { useAuth } from '../state/auth';
 import { useTheme } from '../theme';
@@ -31,6 +24,7 @@ export default function SignUpScreen() {
   const router = useRouter();
   const passwordRef = useRef<TextFieldRef>(null);
   const confirmRef = useRef<TextFieldRef>(null);
+  const keyboardHeight = useKeyboardHeight();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -75,7 +69,8 @@ export default function SignUpScreen() {
         end={{ x: 1, y: 1 }}
         style={[
           styles.hero,
-          { paddingTop: insets.top + 20, borderBottomLeftRadius: radius.xl, borderBottomRightRadius: radius.xl },
+          keyboardHeight > 0 && styles.heroCompact,
+          { paddingTop: insets.top + (keyboardHeight > 0 ? 10 : 20), borderBottomLeftRadius: radius.xl, borderBottomRightRadius: radius.xl },
         ]}
       >
         <Pressable
@@ -87,15 +82,19 @@ export default function SignUpScreen() {
         >
           <Ionicons name="chevron-back" size={22} color="#FFFFFF" />
         </Pressable>
-        <Brand size={52} tone="onPrimary" />
-        <Text style={styles.heroTitle}>Новый аккаунт</Text>
-        <Text style={styles.heroSubtitle}>Один аккаунт — все семейные списки на всех устройствах</Text>
+        <Brand size={keyboardHeight > 0 ? 36 : 52} tone="onPrimary" />
+        <Text style={[styles.heroTitle, keyboardHeight > 0 && styles.heroTitleCompact]}>Новый аккаунт</Text>
+        {keyboardHeight > 0 ? null : (
+          <Text style={styles.heroSubtitle}>Один аккаунт — все семейные списки на всех устройствах</Text>
+        )}
       </LinearGradient>
 
-      <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <View style={styles.flex}>
         <ScrollView
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 28 }]}
+          keyboardDismissMode="on-drag"
+          automaticallyAdjustKeyboardInsets
+          contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 28 + keyboardHeight }]}
           showsVerticalScrollIndicator={false}
         >
           <View
@@ -183,7 +182,7 @@ export default function SignUpScreen() {
 
           <Button label="У меня уже есть аккаунт" variant="ghost" onPress={() => router.replace('/sign-in')} />
         </ScrollView>
-      </KeyboardAvoidingView>
+      </View>
     </View>
   );
 }
@@ -192,6 +191,7 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   flex: { flex: 1 },
   hero: { paddingHorizontal: 24, paddingBottom: 36, gap: 10 },
+  heroCompact: { paddingBottom: 12, gap: 4 },
   back: {
     width: 38,
     height: 38,
@@ -202,6 +202,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   heroTitle: { fontSize: 28, fontWeight: '800', color: '#FFFFFF', letterSpacing: -0.6, marginTop: 4 },
+  heroTitleCompact: { fontSize: 22, marginTop: 0 },
   heroSubtitle: { fontSize: 14, color: 'rgba(255,255,255,0.9)', lineHeight: 20, maxWidth: 320 },
   content: { paddingHorizontal: 20, paddingTop: 18, gap: 14 },
   card: { padding: 20, gap: 16, borderWidth: StyleSheet.hairlineWidth },

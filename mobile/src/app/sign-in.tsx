@@ -1,14 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Brand } from '../components/Brand';
@@ -17,6 +10,7 @@ import { Button } from '../components/ui/Button';
 import { TextField, type TextFieldRef } from '../components/ui/TextField';
 import { errorMessage } from '../lib/errors';
 import { useRedirectIfSignedIn } from '../lib/hooks';
+import { useKeyboardHeight } from '../lib/useKeyboardHeight';
 import { validateEmail, validatePassword } from '../lib/validate';
 import { useAuth } from '../state/auth';
 import { useTheme } from '../theme';
@@ -28,6 +22,7 @@ export default function SignInScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const passwordRef = useRef<TextFieldRef>(null);
+  const keyboardHeight = useKeyboardHeight();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -66,21 +61,23 @@ export default function SignInScreen() {
         end={{ x: 1, y: 1 }}
         style={[
           styles.hero,
-          { paddingTop: insets.top + 36, borderBottomLeftRadius: radius.xl, borderBottomRightRadius: radius.xl },
+          keyboardHeight > 0 && styles.heroCompact,
+          { paddingTop: insets.top + (keyboardHeight > 0 ? 12 : 36), borderBottomLeftRadius: radius.xl, borderBottomRightRadius: radius.xl },
         ]}
       >
-        <Brand size={60} tone="onPrimary" />
-        <Text style={styles.heroTitle}>Shopping</Text>
-        <Text style={styles.heroSubtitle}>Семейные списки покупок — всегда под рукой</Text>
+        <Brand size={keyboardHeight > 0 ? 40 : 60} tone="onPrimary" />
+        <Text style={[styles.heroTitle, keyboardHeight > 0 && styles.heroTitleCompact]}>Shopping</Text>
+        {keyboardHeight > 0 ? null : (
+          <Text style={styles.heroSubtitle}>Семейные списки покупок — всегда под рукой</Text>
+        )}
       </LinearGradient>
 
-      <KeyboardAvoidingView
-        style={styles.flex}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
+      <View style={styles.flex}>
         <ScrollView
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 28 }]}
+          keyboardDismissMode="on-drag"
+          automaticallyAdjustKeyboardInsets
+          contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 28 + keyboardHeight }]}
           showsVerticalScrollIndicator={false}
         >
           {state.notice ? <Banner message={state.notice} variant="info" onDismiss={clearNotice} /> : null}
@@ -155,7 +152,7 @@ export default function SignInScreen() {
             />
           </View>
         </ScrollView>
-      </KeyboardAvoidingView>
+      </View>
     </View>
   );
 }
@@ -164,7 +161,9 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   flex: { flex: 1 },
   hero: { paddingHorizontal: 24, paddingBottom: 44, gap: 10 },
+  heroCompact: { paddingBottom: 14, gap: 4 },
   heroTitle: { fontSize: 34, fontWeight: '800', color: '#FFFFFF', letterSpacing: -0.8, marginTop: 6 },
+  heroTitleCompact: { fontSize: 24, marginTop: 0 },
   heroSubtitle: { fontSize: 15, color: 'rgba(255,255,255,0.9)', lineHeight: 21, maxWidth: 300 },
   content: { paddingHorizontal: 20, paddingTop: 18, gap: 16 },
   card: { padding: 20, gap: 16, borderWidth: StyleSheet.hairlineWidth },
