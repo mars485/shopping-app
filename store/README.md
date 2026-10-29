@@ -24,7 +24,7 @@ store/
 | Параметр | Значение |
 |---|---|
 | Формат | APK (universal, arm64-v8a + armeabi-v7a + x86_64 + x86) |
-| Файл | `mobile/dist/shopping-1.0.0-release.apk` |
+| Файл | `mobile/dist/shopping-1.0.0-release.apk` (или из релиза: <https://github.com/mars485/shopping-app/releases/download/v1.0.0/shopping-1.0.0-release.apk>) |
 | Package | `ru.karpiev.shopping` |
 | Версия | `1.0.0` (`versionCode 1`) |
 | minSdk / targetSdk | 24 (Android 7.0) / 36 |
