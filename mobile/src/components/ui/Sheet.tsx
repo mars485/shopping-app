@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useMemo, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import {
-  KeyboardAvoidingView,
+  Keyboard,
   Modal,
   Platform,
   Pressable,
@@ -30,15 +30,32 @@ export function Sheet({ visible, onClose, title, subtitle, children, footer, scr
   const { colors, radius } = useTheme();
   const styles = useMemo(() => makeStyles(colors, radius), [colors, radius]);
   const insets = useSafeAreaInsets();
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+  // Modal на Android — отдельное окно, поэтому adjustResize не поднимает шторку:
+  // высоту клавиатуры отслеживаем сами и сдвигаем содержимое вверх.
+  useEffect(() => {
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+    const onShow = Keyboard.addListener(showEvent, (event) => {
+      setKeyboardHeight(event.endCoordinates.height);
+    });
+    const onHide = Keyboard.addListener(hideEvent, () => {
+      setKeyboardHeight(0);
+    });
+    return () => {
+      onShow.remove();
+      onHide.remove();
+    };
+  }, []);
+
+  const bottomPadding = keyboardHeight > 0 ? 16 : insets.bottom + 16;
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose} statusBarTranslucent>
-      <KeyboardAvoidingView
-        style={styles.root}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
+      <View style={[styles.root, { paddingBottom: keyboardHeight }]}>
         <Pressable style={styles.backdrop} onPress={onClose} accessibilityLabel="Закрыть" />
-        <View style={[styles.sheet, { paddingBottom: insets.bottom + 16 }]} testID={testID}>
+        <View style={[styles.sheet, { paddingBottom: bottomPadding }]} testID={testID}>
           <View style={styles.handle} />
           <View style={styles.header}>
             <View style={styles.headerText}>
@@ -68,7 +85,7 @@ export function Sheet({ visible, onClose, title, subtitle, children, footer, scr
           )}
           {footer ? <View style={styles.footer}>{footer}</View> : null}
         </View>
-      </KeyboardAvoidingView>
+      </View>
     </Modal>
   );
 }

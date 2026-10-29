@@ -6,7 +6,9 @@ import {
   Text,
   TextInput,
   View,
+  type StyleProp,
   type TextInputProps,
+  type ViewStyle,
 } from 'react-native';
 
 import { useTheme } from '../../theme';
@@ -18,12 +20,14 @@ type Props = TextInputProps & {
   icon?: keyof typeof Ionicons.glyphMap;
   secure?: boolean;
   testID?: string;
+  /** Стили внешней обёртки — нужны, когда поле стоит в строке и должно тянуться. */
+  containerStyle?: StyleProp<ViewStyle>;
 };
 
 export type TextFieldRef = ComponentRef<typeof TextInput>;
 
 export const TextField = forwardRef<TextFieldRef, Props>(function TextField(
-  { label, error, hint, icon, secure = false, style, testID, ...rest },
+  { label, error, hint, icon, secure = false, style, testID, containerStyle, ...rest },
   ref,
 ) {
   const { colors, radius } = useTheme();
@@ -32,7 +36,7 @@ export const TextField = forwardRef<TextFieldRef, Props>(function TextField(
   const [revealed, setRevealed] = useState(false);
 
   return (
-    <View style={styles.wrapper}>
+    <View style={[styles.wrapper, containerStyle]}>
       {label ? <Text style={styles.label}>{label}</Text> : null}
       <View style={[styles.field, focused && styles.focused, !!error && styles.invalid]}>
         {icon ? <Ionicons name={icon} size={18} color={colors.textFaint} /> : null}

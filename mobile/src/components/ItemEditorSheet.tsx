@@ -88,6 +88,19 @@ export function ItemEditorSheet({
       title={isEdit ? 'Изменить товар' : 'Новый товар'}
       subtitle={isEdit ? 'Обновите название, количество или цену' : 'Добавьте позицию в список покупок'}
       testID="item-sheet"
+      footer={
+        <>
+          <Button
+            label={submitLabel ?? (isEdit ? 'Сохранить' : 'Добавить в список')}
+            onPress={submit}
+            loading={submitting}
+            testID="item-submit"
+          />
+          {isEdit && onDelete ? (
+            <Button label="Удалить товар" variant="ghost" icon="trash-outline" onPress={onDelete} />
+          ) : null}
+        </>
+      }
     >
       <TextField
         label="Что купить"
@@ -106,61 +119,58 @@ export function ItemEditorSheet({
         returnKeyType="next"
       />
 
-      <View style={styles.inline}>
-        <View style={styles.quantityBlock}>
-          <Text style={styles.label}>Количество</Text>
-          <View style={styles.stepper}>
-            <Pressable
-              onPress={() => step(-1)}
-              accessibilityRole="button"
-              accessibilityLabel="Уменьшить количество"
-              hitSlop={6}
-              style={styles.stepButton}
-            >
-              <Ionicons name="remove" size={18} color={colors.text} />
-            </Pressable>
-            <TextField
-              testID="item-quantity"
-              value={quantity}
-              onChangeText={(value) => {
-                setQuantity(value);
-                if (errors.quantity) {
-                  setErrors((current) => ({ ...current, quantity: null }));
-                }
-              }}
-              keyboardType="decimal-pad"
-              style={styles.quantityInput}
-              error={errors.quantity}
-            />
-            <Pressable
-              onPress={() => step(1)}
-              accessibilityRole="button"
-              accessibilityLabel="Увеличить количество"
-              hitSlop={6}
-              style={styles.stepButton}
-            >
-              <Ionicons name="add" size={18} color={colors.text} />
-            </Pressable>
-          </View>
-        </View>
-
-        <View style={styles.priceBlock}>
+      <View style={styles.quantityBlock}>
+        <Text style={styles.label}>Количество</Text>
+        <View style={styles.stepper}>
+          <Pressable
+            onPress={() => step(-1)}
+            accessibilityRole="button"
+            accessibilityLabel="Уменьшить количество"
+            hitSlop={6}
+            style={styles.stepButton}
+          >
+            <Ionicons name="remove" size={18} color={colors.text} />
+          </Pressable>
           <TextField
-            label="Цена за единицу, ₽"
-            testID="item-price"
-            value={price}
+            testID="item-quantity"
+            containerStyle={styles.quantityField}
+            value={quantity}
             onChangeText={(value) => {
-              setPrice(value);
-              if (errors.price) {
-                setErrors((current) => ({ ...current, price: null }));
+              setQuantity(value);
+              if (errors.quantity) {
+                setErrors((current) => ({ ...current, quantity: null }));
               }
             }}
-            placeholder="0,00"
             keyboardType="decimal-pad"
-            error={errors.price}
+            style={styles.quantityInput}
+            error={errors.quantity}
           />
+          <Pressable
+            onPress={() => step(1)}
+            accessibilityRole="button"
+            accessibilityLabel="Увеличить количество"
+            hitSlop={6}
+            style={styles.stepButton}
+          >
+            <Ionicons name="add" size={18} color={colors.text} />
+          </Pressable>
         </View>
       </View>
+
+      <TextField
+        label="Цена за единицу, ₽"
+        testID="item-price"
+        value={price}
+        onChangeText={(value) => {
+          setPrice(value);
+          if (errors.price) {
+            setErrors((current) => ({ ...current, price: null }));
+          }
+        }}
+        placeholder="0,00"
+        keyboardType="decimal-pad"
+        error={errors.price}
+      />
 
       <View style={styles.unitsBlock}>
         <Text style={styles.label}>Единица</Text>
@@ -183,26 +193,13 @@ export function ItemEditorSheet({
       </View>
 
       {formError ? <Banner message={formError} onDismiss={() => setFormError(null)} /> : null}
-
-      <Button
-        label={submitLabel ?? (isEdit ? 'Сохранить' : 'Добавить в список')}
-        onPress={submit}
-        loading={submitting}
-        testID="item-submit"
-      />
-
-      {isEdit && onDelete ? (
-        <Button label="Удалить товар" variant="ghost" icon="trash-outline" onPress={onDelete} />
-      ) : null}
     </Sheet>
   );
 }
 
 function makeStyles(colors: ReturnType<typeof useTheme>['colors'], radius: ReturnType<typeof useTheme>['radius']) {
   return StyleSheet.create({
-    inline: { flexDirection: 'row', gap: 12, alignItems: 'flex-start' },
-    quantityBlock: { flex: 1, gap: 6 },
-    priceBlock: { flex: 1 },
+    quantityBlock: { gap: 6 },
     label: { fontSize: 13, fontWeight: '600', color: colors.textMuted },
     stepper: { flexDirection: 'row', alignItems: 'center', gap: 6 },
     stepButton: {
@@ -215,7 +212,9 @@ function makeStyles(colors: ReturnType<typeof useTheme>['colors'], radius: Retur
       borderWidth: StyleSheet.hairlineWidth,
       borderColor: colors.border,
     },
-    quantityInput: { flex: 1, textAlign: 'center' },
+    quantityInput: { textAlign: 'center', paddingHorizontal: 0 },
+    // Обёртка поля в строке с кнопками «−/+»: без flex она сжималась до нуля.
+    quantityField: { flex: 1 },
     unitsBlock: { gap: 8 },
     units: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
     unit: {
