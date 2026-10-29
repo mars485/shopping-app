@@ -57,6 +57,15 @@ npm run lint        # eslint
 npm test            # jest + @testing-library/react-native
 ```
 
+Интеграционные тесты против запущенного бэкенда:
+
+```powershell
+$env:SHOPPING_E2E_URL = "http://127.0.0.1:8000"
+npm run test:integration
+```
+
+Подробности — в `docs/mobile.md`.
+
 ## Сборка APK
 
 ```powershell

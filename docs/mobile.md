@@ -57,7 +57,7 @@ src/theme/               палитры light/dark, отступы, радиус
 ## Тесты
 
 ```powershell
-npm test          # 65 тестов: форматирование, валидация, JWT, ApiClient, редьюсер, ItemRow, ListCard
+npm test          # 79 тестов: форматирование, валидация, JWT, ApiClient, редьюсер, ItemRow, ListCard, экран входа
 npm run typecheck
 npm run lint
 ```
@@ -70,6 +70,27 @@ npm run lint
 - `src/api/client.test.ts` — заголовки, тело, 204, 401, ошибки валидации, 500, сеть, таймаут.
 - `src/state/lists.test.ts` — редьюсер: гидратация из кэша, optimistic toggle и откат, добавление/удаление.
 - `src/components/ItemRow.test.tsx`, `src/components/ListCard.test.tsx` — рендер и обработчики.
+- `src/app/sign-in.test.tsx` — валидация формы, ошибка сервера, успешный вход и переход.
+
+### Интеграционные тесты против живого API
+
+`src/api/integration.test.ts` по умолчанию пропускается. Если задан `SHOPPING_E2E_URL`, он поднимает двух пользователей, создаёт список, проверяет CRUD товаров, подсчёт суммы, шаринг, права владельца/участника и удаление.
+
+```powershell
+# локальный бэкенд на SQLite
+cd backend
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install fastapi "uvicorn[standard]" pydantic "sqlalchemy>=2,<3" PyJWT
+$env:PYTHONPATH = (Get-Location).Path
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+
+# в другом окне
+cd mobile
+$env:SHOPPING_E2E_URL = "http://127.0.0.1:8000"
+npm run test:integration
+```
+
+Проверено: 10 интеграционных тестов проходят на `backend/app/main.py` (SQLite). Тест создаёт уникальных пользователей на каждый запуск, поэтому против продакшна запускайте только осознанно.
 
 ## Известные ограничения
 

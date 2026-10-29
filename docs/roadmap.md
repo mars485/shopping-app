@@ -6,7 +6,7 @@
 - [x] Мобильный клиент на Expo SDK 58 + Expo Router + TypeScript: регистрация, вход, списки, товары, количество/цена/единицы, отметка «куплено», семейный доступ по e-mail.
 - [x] Безопасное хранение токена (SecureStore), обработка `401`, откат оптимистичных изменений, офлайн-кэш.
 - [x] Дизайн уровня Listonic: карточки с прогрессом и суммами, шторки, FAB, светлая/тёмная тема, тактильный отклик.
-- [x] Тесты (65), `tsc --noEmit`, ESLint, `expo export` (android bundle).
+- [x] Тесты (69 unit/component + 10 интеграционных против живого API), `tsc --noEmit`, ESLint, `expo export` (android bundle).
 - [x] Локальная сборка release APK (JDK 21, Android SDK 36, Gradle wrapper).
 - [x] Документация: `docs/api.md`, `docs/mobile.md`, `docs/android-build.md`, README.
 - [x] Исходный код загружен в GitHub `mars485/shopping-app`.

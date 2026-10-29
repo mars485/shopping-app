@@ -95,7 +95,7 @@ export default function ListDetailScreen() {
         text: 'Удалить',
         style: 'destructive',
         onPress: () => {
-          void deleteItem(list.id, target.id);
+          void deleteItem(list.id, target.id).catch(() => undefined);
         },
       },
     ]);
