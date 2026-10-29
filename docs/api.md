@@ -1,0 +1,76 @@
+# API Shopping
+
+Источник истины — `backend/app/main.py` и продовый `https://shopping.karpiev.ru/openapi.json` (проверено: набор путей, схемы и версии совпадают, `0.2.0`).
+
+Базовый URL: `https://shopping.karpiev.ru`. Все ответы — JSON, кроме `204 No Content`.
+
+## Аутентификация
+
+`POST /auth/register` и `POST /auth/login` возвращают:
+
+```json
+{ "access_token": "<jwt>", "token_type": "bearer" }
+```
+
+Далее токен передаётся заголовком `Authorization: Bearer <jwt>`. Внутри JWT: `sub` — id пользователя, `exp` — срок жизни (7 дней). Обновляющего токена нет: по истечении срока или при `401` клиент разлогинивается.
+
+Требования к паролю: 8–128 символов. E-mail нормализуется (trim + lower case) на сервере и на клиенте.
+
+## Эндпоинты
+
+| Метод | Путь | Тело | Ответ |
+|---|---|---|---|
+| GET | `/health` | — | `{ "status": "ok" }` |
+| POST | `/auth/register` | `{ email, password }` | `201`, токен |
+| POST | `/auth/login` | `{ email, password }` | `200`, токен |
+| GET | `/lists` | — | массив списков с товарами |
+| POST | `/lists` | `{ name }` (1–100) | `201`, список |
+| DELETE | `/lists/{list_id}` | — | `204`, только владелец |
+| POST | `/lists/{list_id}/share` | `{ email }` | `{ "shared": true }`, только владелец |
+| POST | `/lists/{list_id}/items` | `{ name, quantity, unit, price }` | `201`, товар |
+| PATCH | `/lists/{list_id}/items/{item_id}` | частично: `name`, `quantity`, `unit`, `price`, `checked` | товар |
+| PATCH | `/lists/{list_id}/items/{item_id}/toggle` | — | товар с переключённым `checked` |
+| DELETE | `/lists/{list_id}/items/{item_id}` | — | `204` |
+| GET | `/lists/{list_id}/total` | — | `{ "total": 1234.5 }` |
+
+### Модели
+
+```ts
+type Item = {
+  id: string;          // uuid
+  name: string;        // 1..120
+  quantity: number;    // > 0, до 3 знаков после запятой
+  unit: string;        // 1..20, по умолчанию "шт"
+  price: number;       // >= 0, до 2 знаков, цена за единицу
+  checked: boolean;
+};
+
+type ShoppingList = {
+  id: string;
+  name: string;
+  owner_id: string;    // id владельца (совпадает с sub в JWT)
+  items: Item[];
+};
+```
+
+### Права доступа
+
+- Список виден владельцу и участникам, добавленным через `/share`.
+- Товары может менять любой участник.
+- Удалять список и открывать доступ может только владелец (`403 Access denied` для остальных).
+- Чужой список, к которому нет доступа, отдаёт `403`, несуществующий — `404`.
+
+### Ошибки
+
+FastAPI отдаёт `{ "detail": "..." }`, при валидации — массив `detail[].msg`. Клиент переводит известные сообщения (`Invalid credentials`, `Access denied`, `User must register first`, …) на русский, см. `mobile/src/api/client.ts`.
+
+## Ограничения текущего бэкенда
+
+Учитываются в UI, чтобы не показывать несуществующие функции:
+
+- Нет переименования списка и нет выхода участника из списка.
+- Нет приглашений по ссылке: участник должен быть заранее зарегистрирован с этим e-mail.
+- Нет отдельного `GET /lists/{id}` — детали берутся из `GET /lists`.
+- Нет обновления количества «на лету» отдельным эндпоинтом — используется `PATCH` товара.
+- Нет пагинации: `GET /lists` возвращает все списки со всеми товарами.
+- Нет refresh-токена и серверного отзыва сессии.

@@ -1,10 +1,25 @@
 # Shopping roadmap
 
-- [ ] Import and review existing mobile v0.3 source
-- [ ] Verify backend API contract and auth
-- [ ] Install Expo dependencies and typecheck
-- [ ] Validate list/item CRUD and family sharing
-- [ ] Build Android preview APK
-- [ ] Install and test on physical Android device
+## Сделано
 
-Production changes require explicit approval.
+- [x] Аудит репозитория и сверка API-контракта с продовым `/openapi.json` (совпадает с `backend/app/main.py`, версия `0.2.0`).
+- [x] Мобильный клиент на Expo SDK 58 + Expo Router + TypeScript: регистрация, вход, списки, товары, количество/цена/единицы, отметка «куплено», семейный доступ по e-mail.
+- [x] Безопасное хранение токена (SecureStore), обработка `401`, откат оптимистичных изменений, офлайн-кэш.
+- [x] Дизайн уровня Listonic: карточки с прогрессом и суммами, шторки, FAB, светлая/тёмная тема, тактильный отклик.
+- [x] Тесты (65), `tsc --noEmit`, ESLint, `expo export` (android bundle).
+- [x] Локальная сборка release APK (JDK 21, Android SDK 36, Gradle wrapper).
+- [x] Документация: `docs/api.md`, `docs/mobile.md`, `docs/android-build.md`, README.
+- [x] Исходный код загружен в GitHub `mars485/shopping-app`.
+
+## Осталось
+
+- [ ] Установить APK на физическое Android-устройство и пройти чек-лист `AGENTS.md` (вход, кросс-пользовательский доступ, CRUD, шаринг, офлайн, установка).
+- [ ] Прогнать сценарии на продовом API с реальными семейными аккаунтами (только чтение/локальные данные, без изменений на сервере).
+- [ ] Настроить постоянный upload-keystore и EAS-профиль `production` перед публикацией в Google Play.
+- [ ] Добавить переименование списка и «покинуть список», когда появятся соответствующие эндпоинты бэкенда.
+- [ ] Рассмотреть realtime-синхронизацию (WebSocket) при росте числа пользователей.
+
+## Ограничения
+
+- Изменения продакшн-сервера (Proxmox, Traefik, БД) требуют явного разрешения владельца.
+- Бэкенд не поддерживает приглашения по ссылке и refresh-токены — UI это учитывает.

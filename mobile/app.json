@@ -1,0 +1,48 @@
+{
+  "expo": {
+    "name": "Shopping",
+    "slug": "shopping",
+    "version": "1.0.0",
+    "scheme": "shopping",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "backgroundColor": "#0B1220",
+    "android": {
+      "package": "ru.karpiev.shopping",
+      "versionCode": 1,
+      "predictiveBackGestureEnabled": false,
+      "adaptiveIcon": {
+        "backgroundColor": "#16A34A",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      }
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "ru.karpiev.shopping"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-secure-store",
+        {
+          "configureAndroidBackup": true,
+          "faceIDPermission": "Разрешить доступ к сохранённой сессии Shopping"
+        }
+      ]
+    ],
+    "extra": {
+      "apiUrl": "https://shopping.karpiev.ru"
+    },
+    "experiments": {
+      "typedRoutes": false
+    }
+  }
+}
