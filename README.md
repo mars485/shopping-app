@@ -75,7 +75,9 @@ cd android
 .\gradlew.bat assembleRelease
 ```
 
-Готовый файл: `mobile/android/app/build/outputs/apk/release/app-release.apk`. Подробности, подпись и EAS-профили — в `docs/android-build.md`.
+Готовый файл: `mobile/android/app/build/outputs/apk/release/app-release.apk`.
+
+Подпись release-сборки настраивается один раз: постоянный upload-keystore лежит **вне репозитория**, а `mobile/keystore.properties` (в `.gitignore`) подключается config-плагином `mobile/plugins/withReleaseSigning.js` при `prebuild`. Если файла нет, release подписывается отладочным ключом. Подробности, проверка сертификата и EAS-профили — в `docs/android-build.md`.
 
 ## Документация
 

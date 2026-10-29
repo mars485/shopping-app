@@ -108,27 +108,80 @@ adb install -r -t android\app\build\outputs\apk\release\app-release.apk
 
 ## Подпись
 
-- По умолчанию шаблон Expo подписывает `release` отладочным keystore (`android/app/debug.keystore`), который генерируется при `prebuild`. Такой APK устанавливается на устройства и годится для внутреннего тестирования.
-- Для Google Play и обновлений «поверх» нужен постоянный upload-keystore. Он **не хранится в репозитории**: используйте EAS credentials или локальный `keystore.properties` вне git, и не коммитьте пароли.
-- При потере keystore обновить опубликованное приложение нельзя — храните его в защищённом месте.
+- Без `mobile/keystore.properties` release-сборка подписывается отладочным ключом (`android/app/debug.keystore` из `prebuild`) — годится для внутренних APK, но не для Google Play и не для обновлений «поверх» опубликованного приложения.
+- Постоянный upload-keystore подключён config-плагином `mobile/plugins/withReleaseSigning.js`: он прописан в `app.json` и при `expo prebuild` добавляет в `android/app/build.gradle` signing-конфигурацию `shoppingRelease`, читающую `mobile/keystore.properties`. Правки переживают перегенерацию `android/`.
+
+### Постоянный upload-keystore
+
+Создан на этой машине:
+
+| Параметр | Значение |
+|---|---|
+| Файл | `C:\Users\ainur\.keys\shopping\upload.keystore` (вне репозитория) |
+| Alias | `shopping` |
+| Тип | PKCS12, RSA 2048 |
+| Срок действия | до 2056-10-21 |
+| SHA-256 сертификата | `D8:3C:31:C3:83:CA:70:CB:94:00:B1:2C:8B:77:43:CA:EF:AC:3A:DC:EF:8B:D6:01:DD:4C:31:D6:75:4F:71:84` |
+| Пароль | `C:\Users\ainur\.keys\shopping\password.txt` |
+
+`mobile/keystore.properties` (в `.gitignore`, в репозиторий не попадает):
+
+```properties
+storeFile=C:/Users/ainur/.keys/shopping/upload.keystore
+storePassword=<пароль>
+keyAlias=shopping
+keyPassword=<пароль>
+```
+
+Пересоздать ключ (только если старый утерян и приложение ещё не опубликовано):
+
+```powershell
+& "$env:JAVA_HOME\bin\keytool.exe" -genkeypair -v -storetype PKCS12 `
+  -keystore C:\Users\ainur\.keys\shopping\upload.keystore -alias shopping `
+  -keyalg RSA -keysize 2048 -validity 10950 `
+  -dname "CN=Shopping, OU=Mobile, O=Karpiev, L=Almaty, ST=Almaty, C=KZ"
+```
+
+Проверить, каким ключом подписан APK:
+
+```powershell
+& "$env:ANDROID_HOME\build-tools\37.0.0\apksigner.bat" verify --print-certs `
+  mobile\android\app\build\outputs\apk\release\app-release.apk
+```
+
+> ВАЖНО: keystore и пароль нужно сохранить в защищённом месте (менеджер паролей + резервная копия). При потере ключа обновить опубликованное приложение невозможно. Никогда не коммитьте keystore, `keystore.properties` и пароли.
+>
+> APK, подписанный новым ключом, не устанавливается поверх ранее установленного debug-APK (`INSTALL_FAILED_UPDATE_INCOMPATIBLE`) — приложение нужно удалить и поставить заново (локальная сессия и кэш при этом теряются, данные на сервере остаются).
+>
+> Чтобы проверить правки поверх уже установленной debug-сборки, временно уберите `mobile/keystore.properties` (сборка снова подпишется debug-ключом), установите APK с `adb install -r`, а затем верните файл и соберите финальный подписанный APK.
 
 ## EAS (облачная сборка)
 
 В `mobile/eas.json` подготовлены профили:
 
-| Профиль | Назначение | Артефакт |
-|---|---|---|
-| `development` | dev client | APK |
-| `preview` | внутреннее тестирование | APK |
-| `production` | магазин | AAB |
+| Профиль | Назначение | Артефакт | Подпись |
+|---|---|---|---|
+| `development` | dev client | APK | EAS credentials |
+| `preview` | внутреннее тестирование | APK | EAS credentials |
+| `production` | магазин | AAB | EAS credentials |
 
 ```powershell
 cd mobile
 npx eas-cli@latest login
 npx eas-cli@latest build --platform android --profile preview
+npx eas-cli@latest build --platform android --profile production   # AAB для Play
 ```
 
-Секреты и keystore хранятся на стороне EAS, в репозиторий не попадают.
+`credentialsSource: "remote"` означает, что keystore хранится на серверах EAS, а не в репозитории. Первый `eas build` предложит сгенерировать новый ключ или загрузить существующий — при публикации в Play используйте **тот же** upload-keystore, что и для локальных сборок, либо один раз настройте EAS:
+
+```powershell
+cd mobile
+npx eas-cli@latest credentials --platform android
+# Android → production → Keystore: upload existing → указать C:\Users\ainur\.keys\shopping\upload.keystore
+```
+
+После этого AAB из EAS и локальный APK будут подписаны одним сертификатом, а Google Play (Play App Signing) продолжит подпись для пользователей.
+
 
 ## Версионирование
 

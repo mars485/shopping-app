@@ -7,17 +7,20 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
+      "credentialsSource": "remote",
       "android": {
         "buildType": "apk"
       }
     },
     "preview": {
       "distribution": "internal",
+      "credentialsSource": "remote",
       "android": {
         "buildType": "apk"
       }
     },
     "production": {
+      "credentialsSource": "remote",
       "android": {
         "buildType": "app-bundle"
       }

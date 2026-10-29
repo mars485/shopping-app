@@ -5,6 +5,8 @@ node_modules/
 !.env.example
 *.keystore
 *.jks
+keystore.properties
+*.keystore.properties
 *.apk
 *.aab
 __pycache__/
