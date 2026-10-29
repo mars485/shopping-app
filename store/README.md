@@ -24,9 +24,9 @@ store/
 | Параметр | Значение |
 |---|---|
 | Формат | APK (universal, arm64-v8a + armeabi-v7a + x86_64 + x86) |
-| Файл | `mobile/dist/shopping-1.0.0-release.apk` (или из релиза: <https://github.com/mars485/shopping-app/releases/download/v1.0.0/shopping-1.0.0-release.apk>) |
+| Файл | `mobile/dist/shopping-1.0.1-release.apk` (или из релиза: <https://github.com/mars485/shopping-app/releases/download/v1.0.1/shopping-1.0.1-release.apk>) |
 | Package | `ru.karpiev.shopping` |
-| Версия | `1.0.0` (`versionCode 1`) |
+| Версия | `1.0.1` (`versionCode 2`) |
 | minSdk / targetSdk | 24 (Android 7.0) / 36 |
 | Подпись | постоянный upload-keystore `CN=Shopping` (SHA-256 `D8:3C:31:…:71:84`) |
 | Размер | ~87 МБ |
@@ -35,9 +35,9 @@ store/
 
 ```powershell
 & "D:\Tools\android-sdk\build-tools\37.0.0\apksigner.bat" verify --print-certs `
-  mobile\dist\shopping-1.0.0-release.apk
+  mobile\dist\shopping-1.0.1-release.apk
 & "D:\Tools\android-sdk\build-tools\37.0.0\aapt2.exe" dump badging `
-  mobile\dist\shopping-1.0.0-release.apk | Select-String "package:|native-code"
+  mobile\dist\shopping-1.0.1-release.apk | Select-String "package:|native-code"
 ```
 
 `native-code` должен содержать `arm64-v8a` (требование RuStore к 64-битным сборкам).
@@ -93,7 +93,7 @@ E-mail: review@karpiev.ru
 
 - Перед каждой новой сборкой увеличивайте `versionCode` (и `version` при заметных изменениях) в `mobile/app.json`.
 - Подписывайте тем же upload-keystore (`mobile/keystore.properties`, ключ вне репозитория) — иначе RuStore отклонит обновление.
-- После релиза добавьте тег в git: `git tag v1.0.0 && git push --tags`.
+- После релиза добавьте тег в git: `git tag v1.0.1 && git push --tags`.
 
 ## 7. Ограничения текущей версии
 

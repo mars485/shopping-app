@@ -2,7 +2,7 @@
   "expo": {
     "name": "Shopping",
     "slug": "shopping",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "scheme": "shopping",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -10,7 +10,7 @@
     "backgroundColor": "#0B1220",
     "android": {
       "package": "ru.karpiev.shopping",
-      "versionCode": 1,
+      "versionCode": 2,
       "predictiveBackGestureEnabled": false,
       "adaptiveIcon": {
         "backgroundColor": "#16A34A",

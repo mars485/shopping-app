@@ -10,7 +10,7 @@
 | 64-битные библиотеки (`arm64-v8a`) | да, universal APK (4 ABI) |
 | `targetSdk` актуальный | 36 |
 | Уникальный `packageName` | `ru.karpiev.shopping` |
-| Растущий `versionCode` при обновлении | 1 (увеличивать перед каждой публикацией) |
+| Растущий `versionCode` при обновлении | 2 (увеличивать перед каждой публикацией) |
 | Иконка 512×512 PNG | `store/icon-512.png` |
 | Скриншоты телефона | `store/screenshots/` (1080×2412) |
 | Политика конфиденциальности по публичной ссылке | <https://mars485.github.io/shopping-app/privacy-policy.html> |
@@ -23,14 +23,14 @@ cd D:\Projects\shopping-app
 
 # подпись
 & "D:\Tools\android-sdk\build-tools\37.0.0\apksigner.bat" verify --print-certs `
-  mobile\dist\shopping-1.0.0-release.apk
+  mobile\dist\shopping-1.0.1-release.apk
 
 # package, версия и ABI
 & "D:\Tools\android-sdk\build-tools\37.0.0\aapt2.exe" dump badging `
-  mobile\dist\shopping-1.0.0-release.apk | Select-String "package:|native-code|application-label"
+  mobile\dist\shopping-1.0.1-release.apk | Select-String "package:|native-code|application-label"
 ```
 
-Ожидаемо: `package: name='ru.karpiev.shopping' versionCode='1' versionName='1.0.0'`,
+Ожидаемо: `package: name='ru.karpiev.shopping' versionCode='2' versionName='1.0.1'`,
 `native-code: 'arm64-v8a' 'armeabi-v7a' 'x86' 'x86_64'`, подпись `CN=Shopping`.
 
 ## Метаданные карточки
@@ -55,7 +55,7 @@ cd D:\Projects\shopping-app
 
 ## Порядок публикации
 
-1. `mobile\dist\shopping-1.0.0-release.apk` — загрузить в RuStore Консоль.
+1. `mobile\dist\shopping-1.0.1-release.apk` — загрузить в RuStore Консоль.
 2. Заполнить карточку: название, краткое и полное описание, «что нового», категория, рейтинг.
 3. Добавить иконку `store/icon-512.png` и скриншоты из `store/screenshots/`.
 4. Указать публичную ссылку на политику конфиденциальности.
@@ -67,7 +67,7 @@ cd D:\Projects\shopping-app
 - Увеличить `versionCode` в `mobile/app.json`, при необходимости — `version`.
 - Собрать APK с тем же upload-keystore (см. `docs/android-build.md`).
 - Обновить `store/ru/whats-new.md` и `store/ru/metadata.json`.
-- Поставить тег: `git tag v1.0.1 && git push --tags`.
+- Поставить тег: `git tag v1.0.2 && git push --tags`.
 
 ## Публичная ссылка на политику
 
