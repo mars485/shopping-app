@@ -3,7 +3,7 @@ import { fireEvent, screen, waitFor } from '@testing-library/react-native';
 import type { ShoppingApi } from '../api/shopping';
 import { AuthProvider } from '../state/auth';
 import { renderWithTheme } from '../test-utils';
-import SignInScreen from './sign-in';
+import SignInScreen from '../app/sign-in';
 
 const mockRouter = {
   replace: jest.fn(),
