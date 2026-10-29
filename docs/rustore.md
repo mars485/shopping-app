@@ -13,7 +13,7 @@
 | Растущий `versionCode` при обновлении | 1 (увеличивать перед каждой публикацией) |
 | Иконка 512×512 PNG | `store/icon-512.png` |
 | Скриншоты телефона | `store/screenshots/` (1080×2412) |
-| Политика конфиденциальности по публичной ссылке | `docs/privacy-policy.md` |
+| Политика конфиденциальности по публичной ссылке | <https://mars485.github.io/shopping-app/privacy-policy.html> |
 | Доступ для модерации (в приложении есть вход) | тестовый аккаунт, см. ниже |
 
 ## Проверка APK перед загрузкой
@@ -71,10 +71,10 @@ cd D:\Projects\shopping-app
 
 ## Публичная ссылка на политику
 
-Пока GitHub Pages не настроены, можно использовать raw-ссылку:
+GitHub Pages включён (source: ветка `main`, каталог `/docs`), Jekyll публикует markdown как HTML:
 
-```
-https://github.com/mars485/shopping-app/blob/main/docs/privacy-policy.md
-```
+- политика: <https://mars485.github.io/shopping-app/privacy-policy.html>
+- оглавление документации: <https://mars485.github.io/shopping-app/>
+- инструкция для RuStore: <https://mars485.github.io/shopping-app/rustore.html>
 
-Для «красивой» ссылки включите GitHub Pages для каталога `docs/` — тогда политика будет доступна по `https://mars485.github.io/shopping-app/privacy-policy.html` (после настройки).
+При изменении `docs/privacy-policy.md` страница обновляется автоматически после пуша в `main` (сборка ~1 минута).

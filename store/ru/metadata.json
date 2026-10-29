@@ -11,7 +11,7 @@
   "shortDescription": "Семейный список покупок: количество, цены и общий доступ",
   "keywords": ["список покупок", "покупки", "продукты", "семья", "шопинг", "чек-лист"],
   "supportEmail": "support@karpiev.ru",
-  "privacyPolicyUrl": "https://github.com/mars485/shopping-app/blob/main/docs/privacy-policy.md",
+  "privacyPolicyUrl": "https://mars485.github.io/shopping-app/privacy-policy.html",
   "serverUrl": "https://shopping.karpiev.ru",
   "artifacts": {
     "apk": "../mobile/dist/shopping-1.0.0-release.apk",

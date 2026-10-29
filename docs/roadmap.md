@@ -10,6 +10,8 @@
 - [x] Сборка и проверка APK: release-сборка (universal, 87 МБ), `apksigner verify`, установка и UI-сценарий на эмуляторе Android 15 (регистрация → список → товар → отметка → перезапуск), кросс-проверка данных через API.
 - [x] Постоянный upload-keystore (`CN=Shopping`), config-плагин `withReleaseSigning`, EAS-профили с `credentialsSource: remote` — APK и AAB подписываются одним сертификатом.
 - [x] Материалы для RuStore: `store/` (иконка 512×512, 6 скриншотов 1080×2400, описания, «что нового», метаданные), политика конфиденциальности `docs/privacy-policy.md`, инструкция `docs/rustore.md`, GitHub Release `v1.0.0` с APK.
+- [x] Публичная политика конфиденциальности на GitHub Pages: <https://mars485.github.io/shopping-app/privacy-policy.html>.
+- [x] Аккаунт для модерации RuStore: `review@karpiev.ru` с демо-списком «Демо-список для проверки» (5 товаров, один отмечен); пароль хранится вне репозитория.
 - [x] Документация: `docs/api.md`, `docs/mobile.md`, `docs/android-build.md`, `docs/rustore.md`, README.
 - [x] Исходный код загружен в GitHub `mars485/shopping-app`.
 
